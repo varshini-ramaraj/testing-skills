@@ -8,67 +8,129 @@ logger = logging.getLogger(__name__)
 class FakeModelData:
     # Add something here
     def __init__(self,
-                 sites,
-                 data_two,
-                 data_three,
-                 data_four):
+                 sources,
+                 destinations,
+                 products,
+                 costs):
         # PPT Note: Does not allow for mocking of anyone of them, will fail immediately
-        self.init_data(sites, data_two, data_three, data_four)
+        self.init_data(sources, destinations, products, costs)
         # PPT Note: Initialize this here does not allow for mocking
         self.model = Model()
         # PPT Note: Initialize this here does not allow for mocking
         self.data_reader = DataReader()
 
-    def init_data(self, sites, data_two, data_three, data_four):
-        if sites is None:
-            raise Exception("No Sites")
-        if data_two is None:
-            raise Exception("No Data two")
-        if data_three is None:
-            raise Exception("No Data three")
-        if data_four is None:
-            raise Exception("No Data four")
+    def init_data(self, sources, destinations, products, costs):
+        if sources is None:
+            raise Exception("No Sources")
+        if destinations is None:
+            raise Exception("No destinations")
+        if products is None:
+            raise Exception("No Products")
+        if costs is None:
+            raise Exception("No costs")
 
-        # more setup for all four of them
-
-        # something about case conversion and matching
-        # SOmething about checking for specific values
         # Varshini please write everything in one function
         # Reading a file? Reading two files
         # ... how far do I take this example
-    def load_site_data(self) -> None:
-        logger.info("Loading Sites data")
-        sites_null_lat_long_count = 0
-        sites_total_count = 0
+    def load_source_data(self) -> None:
+        logger.info("Loading Sources data")
 
         # PPT Note: Can make this an actual read in here - and then changing that is the point
-        sites_data = self.data_reader.read_sites()
-        for site_data in sites_data:
-            sites_total_count += 1
-            site = Site()
+        sources_data = self.data_reader.read_sources()
+        for source_data in sources_data:
+            source = Source()
             # PPT Note: Need to standardize string
-            # PPT Note: Need to remove strings
+            # PPT Note: Need to variablize strings
             # PPT note: lets assume this parentheses part isn't the issue
-            site.name = site_data["SiteName"]
-            site.orig_name = site.name
-            site.is_customer = False
-            latitude = site_data["Latitude"]
-            longitude = site_data["Longitude"]
+            source.name = source_data["SourceName"]
+            source.orig_name = source.name
+            source.is_destination = False
+            latitude = source_data["Latitude"]
+            longitude = source_data["Longitude"]
 
-            # PPT note: Can function this
-            sites_null_lat_long_count += latitude is None or longitude is None
             # PPT note: can function this
             # PPT note: will fail if latitude/longitude is None, error happens inside constructor and so is confusing, could be functionized
-            site.geo_coordinate = Coordinate(float(latitude), float(longitude))
+            source.geo_coordinate = Coordinate(float(latitude), float(longitude))
 
-            self.model.add_site(site)
+            self.model.add_source(source)
+
+    def load_destination_data(self) -> None:
+        logger.info("Loading destinations data")
+
+        # PPT Note: Can make this an actual read in here - and then changing that is the point
+        destinations_data = self.data_reader.read_destinations()
+        for destination_data in destinations_data:
+            destination = Destination()
+            # PPT Note: Need to standardize string
+            # PPT Note: Need to variablize strings
+            # PPT note: lets assume this parentheses part isn't the issue
+            destination.name = destination_data["destinationName"]
+            destination.orig_name = destination.name
+            destination.is_destination = False
+            latitude = destination_data["Latitude"]
+            longitude = destination_data["Longitude"]
+
+            # PPT note: can function this
+            # PPT note: will fail if latitude/longitude is None, error happens inside constructor and so is confusing, could be functionized
+            destination.geo_coordinate = Coordinate(float(latitude), float(longitude))
+
+            self.model.add_destination(destination)
+
+    def load_product_data(self):
+        logger.info("Loading Product data")
+        products_data = self.data_reader.read_products()
+        for product_data in products_data:
+            # PPT Note: Need to standardize string
+            # PPT Note: Need to variablize strings
+            # PPT note: lets assume this parentheses part isn't the issue
+            product_name = product_data["ProductName"]
+            # PPT note: Floating a None will throw an error
+            weight = float(
+                product_data["UnitWeight"]
+            )
+            cubic = float(
+                product_data["UnitVolume"]
+            )
+            self.model.add_product(Product(product_name, weight, cubic))
+
+    def load_costs(self):
+        logger.info("Loading Unit Costs")
+        costs_data = self.data_reader.read_costs()
+        for cost_data in costs_data:
+            # PPT Note: Need to standardize string
+            # PPT Note: Need to variablize strings
+            # PPT note: lets assume this parentheses part isn't the issue
+            source_name = cost_data["SourceName"]
+            destination_name = cost_data["DestinationName"]
+            product_name = cost_data["ProductName"]
+            # PPT note: Floating a None will throw an error
+            cost = float(cost_data["UnitCost"])
+            self.model.add_cost(Cost(source_name, destination_name, product_name, cost))
 
 
-class Site:
+class Source:
     def __init__(self):
         self.name = None
 
-    pass
+
+class Destination:
+    def __init__(self):
+        self.name = None
+
+
+class Product:
+    def __init__(self, name, weight, volume):
+        self.name = name
+        self.weight = weight
+        self.volume = volume
+
+
+class Cost:
+    def __init__(self, source_name, destination_name, product_name, unit_cost):
+        self.source_name = source_name
+        self.destination_name = destination_name
+        self.product_name = product_name
+        self.unit_cost = unit_cost
 
 
 class Coordinate:
@@ -80,14 +142,40 @@ class Coordinate:
 class Model:
     def __init__(self):
         # PPT note: lack of type hinting leads to its own issues
-        self._d_sites = dict()
-        self.sites = list()
+        self._d_sources = dict()
+        self._d_destinations = dict()
+        self._d_products = dict()
+        self.sources = list()
+        self.destinations = list()
+        self.products = list()
 
-    def add_site(self, site: Site) -> Site:
+    def add_source(self, source: Source) -> Source:
         # PPT note: Case agnostic check needs to happen
-        lookup_name = site.name
-        if lookup_name not in self._d_sites:
-            self._d_sites[lookup_name] = site
-            self.sites.append(site)
-            return site
-        return self._d_sites[lookup_name]
+        lookup_name = source.name
+        if lookup_name not in self._d_sources:
+            self._d_sources[lookup_name] = source
+            self.sources.append(source)
+            return source
+        return self._d_sources[lookup_name]
+
+    def add_destination(self, destination: Destination):
+        # PPT note: Case agnostic check needs to happen
+        lookup_name = destination.name
+        if lookup_name not in self._d_destinations:
+            self._d_destinations[lookup_name] = destination
+            self.destinations.append(destination)
+            return destination
+        return self._d_destinations[lookup_name]
+
+    def add_product(self, product):
+        # PPT note: Case agnostic check needs to happen
+        lookup_name = product.name
+        if lookup_name not in self._d_products:
+            self._d_products[lookup_name] = product
+            self.products.append(product)
+        return self._d_products[lookup_name]
+
+    def add_cost(self, cost: Cost):
+        # Needs to be implemented - adder vs getter?
+        # Search for source, destination, and product from other lists, then add cost here
+        pass
