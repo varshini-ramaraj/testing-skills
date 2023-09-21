@@ -17,8 +17,9 @@ class FakeModelData:
         # PPT Note: Initialize this here does not allow for mocking
         self.model = Model()
         # PPT Note: Initialize this here does not allow for mocking
-        self.data_reader = DataReader()
+        self.data_reader = DataReader(populate_automatically=True)
 
+    # This doesnt really work - fix it next time!
     def init_data(self, sources, destinations, products, costs):
         if sources is None:
             raise Exception("No Sources")
@@ -64,7 +65,7 @@ class FakeModelData:
             # PPT Note: Need to standardize string
             # PPT Note: Need to variablize strings
             # PPT note: lets assume this parentheses part isn't the issue
-            destination.name = destination_data["destinationName"]
+            destination.name = destination_data["DestinationName"]
             destination.orig_name = destination.name
             destination.is_destination = False
             latitude = destination_data["Latitude"]
