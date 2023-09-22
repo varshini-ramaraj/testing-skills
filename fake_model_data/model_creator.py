@@ -11,19 +11,16 @@ class FakeModelCreator:
         # PPT Note: Does not allow for mocking of anyone of them, will fail immediately
         # PPT Note: Initialize this here does not allow for mocking
         self.model = FakeModel()
-        # PPT Note: Initialize this here does not allow for mocking
         self.data_reader = DataReader(populate_automatically=True)
         self.read_all_data()
 
     def read_all_data(self):
-        # PPT Note: Can make this an actual read in here - and then changing that is the point
         sources_data = self.data_reader.read_sources()
         destination_data = self.data_reader.read_destinations()
         products_data = self.data_reader.read_products()
         costs_data = self.data_reader.read_costs()
         self.init_data(sources_data, destination_data, products_data, costs_data)
 
-    # This doesnt really work - fix it next time!
     def init_data(self, sources, destinations, products, costs):
         if sources is None:
             raise Exception("No Sources")
@@ -39,16 +36,11 @@ class FakeModelCreator:
         self.load_product_data(products)
         self.load_costs(costs)
 
-        # Varshini please write everything in one function
-        # Reading a file? Reading two files
-        # ... how far do I take this example
     def load_source_data(self, sources_data) -> None:
         logger.info("Loading Sources data")
 
         for source_data in sources_data:
             source = Source()
-            # PPT Note: Need to standardize string
-            # PPT Note: Need to variablize strings
             # PPT note: lets assume this parentheses part isn't the issue
             source.name = source_data["SourceName"]
             source.orig_name = source.name
@@ -56,8 +48,6 @@ class FakeModelCreator:
             latitude = source_data["Latitude"]
             longitude = source_data["Longitude"]
 
-            # PPT note: can function this
-            # PPT note: will fail if latitude/longitude is None, error happens inside constructor and so is confusing, could be functionized
             source.geo_coordinate = Coordinate(float(latitude), float(longitude))
 
             self.model.add_source(source)
@@ -67,17 +57,12 @@ class FakeModelCreator:
 
         for destination_data in destinations_data:
             destination = Destination()
-            # PPT Note: Need to standardize string
-            # PPT Note: Need to variablize strings
-            # PPT note: lets assume this parentheses part isn't the issue
             destination.name = destination_data["DestinationName"]
             destination.orig_name = destination.name
             destination.is_destination = False
             latitude = destination_data["Latitude"]
             longitude = destination_data["Longitude"]
 
-            # PPT note: can function this
-            # PPT note: will fail if latitude/longitude is None, error happens inside constructor and so is confusing, could be functionized
             destination.geo_coordinate = Coordinate(float(latitude), float(longitude))
 
             self.model.add_destination(destination)
@@ -86,11 +71,7 @@ class FakeModelCreator:
         logger.info("Loading Product data")
 
         for product_data in products_data:
-            # PPT Note: Need to standardize string
-            # PPT Note: Need to variablize strings
-            # PPT note: lets assume this parentheses part isn't the issue
             product_name = product_data["ProductName"]
-            # PPT note: Floating a None will throw an error
             weight = float(
                 product_data["UnitWeight"]
             )
@@ -103,13 +84,9 @@ class FakeModelCreator:
         logger.info("Loading Unit Costs")
 
         for cost_data in costs_data:
-            # PPT Note: Need to standardize string
-            # PPT Note: Need to variablize strings
-            # PPT note: lets assume this parentheses part isn't the issue
             source_name = cost_data["SourceName"]
             destination_name = cost_data["DestinationName"]
             product_name = cost_data["ProductName"]
-            # PPT note: Floating a None will throw an error
             cost = float(cost_data["UnitCost"])
             self.model.add_cost(Cost(source_name, destination_name, product_name, cost))
 
@@ -132,10 +109,10 @@ class Product:
 
 
 class Cost:
-    def __init__(self, source_name, destination_name, product_name, unit_cost):
-        self.source_name = source_name
-        self.destination_name = destination_name
-        self.product_name = product_name
+    def __init__(self, source: Source, destination: Destination, product: Product, unit_cost):
+        self.source = source
+        self.destination = destination
+        self.product = product
         self.unit_cost = unit_cost
 
 
@@ -147,7 +124,6 @@ class Coordinate:
 
 class FakeModel:
     def __init__(self):
-        # PPT note: lack of type hinting leads to its own issues
         self._d_sources = dict()
         self._d_destinations = dict()
         self._d_products = dict()

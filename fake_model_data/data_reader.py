@@ -77,7 +77,6 @@ class DataCreator:
     def create_destination(self, destination):
         destination_dict = dict()
         destination_name, lat, long = destination
-        # PPT note: upper case vs lower case maybe - should we put it here tho? decide
         destination_dict["DestinationName"] = destination_name
         destination_dict["Latitude"] = lat
         destination_dict["Longitude"] = long
@@ -86,7 +85,6 @@ class DataCreator:
     def create_product(self, product):
         product_dict = dict()
         product_name, lat, long = product
-        # PPT note: upper case vs lower case maybe - should we put it here tho? decide
         product_dict["ProductName"] = product_name
         product_dict["UnitWeight"] = lat
         product_dict["UnitVolume"] = long
@@ -95,7 +93,6 @@ class DataCreator:
     def create_cost(self, cost_data):
         cost_dict = dict()
         source, destination, product, cost = cost_data
-        # PPT note: upper case vs lower case maybe - should we put it here tho? decide
         cost_dict["SourceName"] = source
         cost_dict["DestinationName"] = destination
         cost_dict["ProductName"] = product
