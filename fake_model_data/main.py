@@ -5,19 +5,23 @@ from fake_model_data.data_reader import DataReader
 logger = logging.getLogger(__name__)
 
 
-class FakeModelData:
+class FakeModelCreator:
     # Add something here
-    def __init__(self,
-                 sources,
-                 destinations,
-                 products,
-                 costs):
+    def __init__(self):
         # PPT Note: Does not allow for mocking of anyone of them, will fail immediately
-        self.init_data(sources, destinations, products, costs)
         # PPT Note: Initialize this here does not allow for mocking
-        self.model = Model()
+        self.model = FakeModel()
         # PPT Note: Initialize this here does not allow for mocking
         self.data_reader = DataReader(populate_automatically=True)
+        self.read_all_data()
+
+    def read_all_data(self):
+        # PPT Note: Can make this an actual read in here - and then changing that is the point
+        sources_data = self.data_reader.read_sources()
+        destination_data = self.data_reader.read_destinations()
+        products_data = self.data_reader.read_products()
+        costs_data = self.data_reader.read_costs()
+        self.init_data(sources_data, destination_data, products_data, costs_data)
 
     # This doesnt really work - fix it next time!
     def init_data(self, sources, destinations, products, costs):
@@ -30,14 +34,17 @@ class FakeModelData:
         if costs is None:
             raise Exception("No costs")
 
+        self.load_source_data(sources)
+        self.load_destination_data(destinations)
+        self.load_product_data(products)
+        self.load_costs(costs)
+
         # Varshini please write everything in one function
         # Reading a file? Reading two files
         # ... how far do I take this example
-    def load_source_data(self) -> None:
+    def load_source_data(self, sources_data) -> None:
         logger.info("Loading Sources data")
 
-        # PPT Note: Can make this an actual read in here - and then changing that is the point
-        sources_data = self.data_reader.read_sources()
         for source_data in sources_data:
             source = Source()
             # PPT Note: Need to standardize string
@@ -55,11 +62,9 @@ class FakeModelData:
 
             self.model.add_source(source)
 
-    def load_destination_data(self) -> None:
+    def load_destination_data(self, destinations_data) -> None:
         logger.info("Loading destinations data")
 
-        # PPT Note: Can make this an actual read in here - and then changing that is the point
-        destinations_data = self.data_reader.read_destinations()
         for destination_data in destinations_data:
             destination = Destination()
             # PPT Note: Need to standardize string
@@ -77,9 +82,9 @@ class FakeModelData:
 
             self.model.add_destination(destination)
 
-    def load_product_data(self):
+    def load_product_data(self, products_data):
         logger.info("Loading Product data")
-        products_data = self.data_reader.read_products()
+
         for product_data in products_data:
             # PPT Note: Need to standardize string
             # PPT Note: Need to variablize strings
@@ -94,9 +99,9 @@ class FakeModelData:
             )
             self.model.add_product(Product(product_name, weight, cubic))
 
-    def load_costs(self):
+    def load_costs(self, costs_data):
         logger.info("Loading Unit Costs")
-        costs_data = self.data_reader.read_costs()
+
         for cost_data in costs_data:
             # PPT Note: Need to standardize string
             # PPT Note: Need to variablize strings
@@ -140,7 +145,7 @@ class Coordinate:
         self.longitude = lon
 
 
-class Model:
+class FakeModel:
     def __init__(self):
         # PPT note: lack of type hinting leads to its own issues
         self._d_sources = dict()
@@ -179,4 +184,4 @@ class Model:
     def add_cost(self, cost: Cost):
         # Needs to be implemented - adder vs getter?
         # Search for source, destination, and product from other lists, then add cost here
-        pass
+        return
