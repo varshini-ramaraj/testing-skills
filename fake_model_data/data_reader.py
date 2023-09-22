@@ -26,7 +26,7 @@ class DataCreator:
             self._create_costs()
 
     def _create_sources(self):
-        source_1 = ("Source1", None, None)
+        source_1 = ("Source1", 1.0, 1.0)
         source_2 = ("Source2", 0, 1e-4)
         source_3 = ("Source3", 100, 100)
         sources = [source_1, source_2, source_3]
@@ -36,7 +36,7 @@ class DataCreator:
             self.source_data.append(source_dict)
 
     def _create_destinations(self):
-        destination_1 = ("Destination1", None, None)
+        destination_1 = ("Destination1", 1.0, 1.0)
         destination_2 = ("Destination2", 0, 1e-4)
         destination_3 = ("Destination3", 100, 100)
         destinations = [destination_1, destination_2, destination_3]
@@ -46,7 +46,7 @@ class DataCreator:
             self.destination_data.append(destination_dict)
 
     def _create_products(self):
-        product_1 = ("Product1", None, None)
+        product_1 = ("Product1", 1.0, 1.0)
         product_2 = ("Product2", 1.0, 2.0)
         product_3 = ("Product3", 10.0, -11.5)
         products = [product_1, product_2, product_3]

@@ -154,6 +154,7 @@ class FakeModel:
         self.sources = list()
         self.destinations = list()
         self.products = list()
+        self.costs = list()
 
     def add_source(self, source: Source) -> Source:
         # PPT note: Case agnostic check needs to happen
