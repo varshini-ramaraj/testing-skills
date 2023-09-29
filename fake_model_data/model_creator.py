@@ -6,10 +6,9 @@ logger = logging.getLogger(__name__)
 
 
 class FakeModelCreator:
-    # Add something here
     def __init__(self):
-        # PPT Note: Does not allow for mocking of anyone of them, will fail immediately
-        # PPT Note: Initialize this here does not allow for mocking
+        # Note: Does not allow for mocking of anyone of them, will fail immediately
+        # Note: Initialize this here does not allow for mocking
         self.model = FakeModel()
         self.data_reader = DataReader(populate_automatically=True)
         self.read_all_data()
@@ -41,7 +40,7 @@ class FakeModelCreator:
 
         for source_data in sources_data:
             source = Source()
-            # PPT note: lets assume this parentheses part isn't the issue
+            # Note: lets assume this parentheses part isn't the issue
             source.name = source_data["SourceName"]
             source.orig_name = source.name
             source.is_destination = False
@@ -133,7 +132,6 @@ class FakeModel:
         self.costs = list()
 
     def add_source(self, source: Source) -> Source:
-        # PPT note: Case agnostic check needs to happen
         lookup_name = source.name
         if lookup_name not in self._d_sources:
             self._d_sources[lookup_name] = source
@@ -142,7 +140,6 @@ class FakeModel:
         return self._d_sources[lookup_name]
 
     def add_destination(self, destination: Destination):
-        # PPT note: Case agnostic check needs to happen
         lookup_name = destination.name
         if lookup_name not in self._d_destinations:
             self._d_destinations[lookup_name] = destination
@@ -151,7 +148,6 @@ class FakeModel:
         return self._d_destinations[lookup_name]
 
     def add_product(self, product):
-        # PPT note: Case agnostic check needs to happen
         lookup_name = product.name
         if lookup_name not in self._d_products:
             self._d_products[lookup_name] = product
@@ -159,6 +155,5 @@ class FakeModel:
         return self._d_products[lookup_name]
 
     def add_cost(self, cost: Cost):
-        # Needs to be implemented - adder vs getter?
         # Search for source, destination, and product from other lists, then add cost here
         return

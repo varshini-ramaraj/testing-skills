@@ -1,0 +1,24 @@
+How about nice to have's vs bugs
+
+
+
+Bugs
+- Allowing for Nones/Nulls in latitude/longitude
+- Actually implementing calculate costs (includes searching for source/destination/products)
+- Standardizing string values of source/destination/product, especially for comparison
+- Allow for Nones/Nulls in weight and volume
+- Should we allow for Nones in cost unit cost lol? That feels besides the point
+
+Not a bug but should have
+- allowing the flow to not initialize all four of them together, but does it separately in each concern
+- also doesnt do it in initializer, but waits for a call
+- Use Mock for returning values
+
+
+Nice to have
+- variable-izing the dictionary keys
+- Changing the initializer of fake model creator, rather than changing the data in data_reader
+- Changing the initializer of fake model creator, than model going through all that its going through
+- Calling the float or default of lat/long in its own function than leaving it in the class call
+- lack of type hinting changing to type hinting in the separate classes
+- all the classes being moved out of the model_creator class
